@@ -3,9 +3,10 @@
 /**
  * Block edit form class for the block_pluginname plugin.
  *
- * @package   block_pluginname
- * @copyright 2025, Daniel Morais <danielbergmorais@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     block_course_rating
+ * @category    block
+ * @copyright   2025, Daniel Morais <danielbergmorais@gmail.com>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 class block_course_rating_edit_form extends block_edit_form
@@ -14,11 +15,6 @@ class block_course_rating_edit_form extends block_edit_form
     {
         // Section header title according to language file.
         $mform->addElement('header', 'config_header', get_string('blocksettings', 'block_course_rating'));
-
-        // A sample string variable with a default value.
-        $mform->addElement('text', 'config_text', get_string('blockstring', 'block_course_rating'));
-        $mform->setDefault('config_text', 'default value');
-        $mform->setType('config_text', PARAM_TEXT);
 
         //Options
         $options = [

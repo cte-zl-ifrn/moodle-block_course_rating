@@ -1,6 +1,70 @@
 /* Styles for course ratings */
 
+.comment-ta {
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    height: 100px;
+    min-height: 48px;
+    min-width: 240px;
+    width: 100%;
+}
 
-.checked {
-    color: orange;
+.block-rating-start {
+    cursor: pointer;
+}
+
+.star-img {
+    margin-right: .5em;
+    height: 20px !important;
+    width: 20px !important;
+}
+
+.star-img-small {
+    margin-right: .5em;
+    height: 12px !important;
+    width: 12px !important;
+}
+
+.btn-comment {
+    background: #9F6EDE;
+    border: none;
+    border-radius: 40px;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    height: 38px;
+    padding: 8px 16px;
+    width: 191px;
+}
+
+h1.review_title {
+    color: #2B2B2B;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 52px;
+}
+
+
+.text_review{
+    color: #2B2B2B;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.bar_reviews {
+    height: 9px;
+    background-color: #EBBE34;
+    display: block;
+    margin: 8px 0 13px -45px;
 }

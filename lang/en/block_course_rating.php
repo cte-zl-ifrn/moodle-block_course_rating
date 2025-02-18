@@ -15,7 +15,7 @@ $string['review'] = 'Review';
 $string['comment'] = 'Comment';
 $string['block_course_rating'] = 'Rating Course in Block';
 $string['content'] = 'Content';
-$string['sendbutton'] = 'Send';
+$string['sendbutton'] = 'Send comment';
 
 $string['blocksettings'] = 'Block Settings';
 $string['blockstring'] = 'Block String';
@@ -26,3 +26,5 @@ $string['settings_content'] = 'Content of config';
 $string['in_progress'] = 'In progress';
 $string['finished'] = 'After Course Finished';
 $string['exibition'] = 'Exibition';
+
+$string['finish_before'] = 'Finish the course before sendo a review';
