@@ -63,8 +63,36 @@ h1.review_title {
 }
 
 .bar_reviews {
-    height: 9px;
     background-color: #EBBE34;
     display: block;
-    margin: 8px 0 13px -45px;
+    height: 9px;
+    margin: 7px 0 14px -30px;
+    min-width: 2px;
+}
+
+.myreview_title {
+    color: #2B2B2B;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.myreview_date {
+    color: #858585;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 19px;
+}
+.myreview_text {
+    color: #2B2B2B;
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+
 }

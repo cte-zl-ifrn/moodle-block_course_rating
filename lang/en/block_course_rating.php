@@ -28,3 +28,6 @@ $string['finished'] = 'After Course Finished';
 $string['exibition'] = 'Exibition';
 
 $string['finish_before'] = 'Finish the course before sendo a review';
+
+$string['comment_save'] = 'Rating has been sent!';
+$string['comment_error'] = 'An error occurred while saving comment';

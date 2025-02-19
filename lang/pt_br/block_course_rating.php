@@ -29,3 +29,6 @@ $string['finished'] = 'Após concluir o curso';
 $string['exibition'] = 'Exibir apenas';
 
 $string['finish_before'] = 'Complete o curso antes de realizar uma avaliação.';
+
+$string['comment_save'] = 'A avaliação foi enviada com sucesso!';
+$string['comment_error'] = 'Houve um erro ao enviar sua avaliação, tente novamente mais tarde.';
