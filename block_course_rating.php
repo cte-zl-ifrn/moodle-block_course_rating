@@ -135,7 +135,7 @@ class block_course_rating extends block_base
         //All reviews ratings
         $title_review = '';
         $title_review .= html_writer::start_div('row pl-3');
-        $title_review .= html_writer::start_div('col-md-2 text-right');
+        $title_review .= html_writer::start_div('col-md-2 text-md-right');
         $title_review .= html_writer::tag('h1', number_format($sum_rating / $total_ratings, 1, '.', ''), ['class' => 'review_title']);
         $title_review .= html_writer::end_div();
 
@@ -159,8 +159,8 @@ class block_course_rating extends block_base
         $sub_review = '';
         $sub_review .= html_writer::start_div('row pl-3 mb-3');
 
-        $sub_review .= html_writer::start_div('col-md-3 pl-5');
-        $percents = [0, 10, 15, 55, 10, 100];
+        $sub_review .= html_writer::start_div('col-md-9 pl-md-5 pl-sm-3');
+
         for ($x = 5; $x >= 1; $x--) {
             for ($y = 0; $y < $x; $y++) {
                 $sub_review .=  $OUTPUT->pix_icon('star', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
@@ -168,21 +168,14 @@ class block_course_rating extends block_base
             for ($y = $x; $y < 5; $y++) {
                 $sub_review .=  $OUTPUT->pix_icon('star-o', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
             }
-            $sub_review .= html_writer::span((($rating_stars_percents[$x] / $total_ratings) * 100) . ' %', 'text_review');
+            $sub_review .= html_writer::span((($rating_stars_percents[$x] / $total_ratings) * 100) . ' %', 'text_review text_percent');
+            $sub_review .= html_writer::div('', 'bar_reviews', ['style' => 'width: calc(' . (($rating_stars_percents[$x] / $total_ratings) * 100) . ' * 1% )']);
             $sub_review .=  '<br />';
         }
         $sub_review .= html_writer::end_div();
-
-        $sub_review .= html_writer::start_div('col-md-9');
-        for ($x = 5; $x >= 1; $x--) {
-            $sub_review .= html_writer::div('', 'bar_reviews', ['style' => 'width: calc(' . (($rating_stars_percents[$x] / $total_ratings) * 100) . ' * 5px )']);
-        }
-        $sub_review .= html_writer::end_div();
-
         $sub_review .= html_writer::end_div();
 
         $content .= $sub_review;
-
         /**************************************************** */
         //Message if review is not available
         $config = $this->get_config();
@@ -207,7 +200,6 @@ class block_course_rating extends block_base
             return $this->content;
         }
         /**************************************************** */
-
         if ($my_rating) {
             $content .= $my_review;
 
@@ -216,8 +208,6 @@ class block_course_rating extends block_base
         }
 
         /**************************************************** */
-
-
         // Begin form
         $content .= html_writer::start_tag('form', ['method' => 'post']);
 

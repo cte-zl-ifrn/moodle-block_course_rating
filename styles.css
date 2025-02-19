@@ -62,14 +62,24 @@ h1.review_title {
     line-height: 22px;
 }
 
-.bar_reviews {
-    background-color: #EBBE34;
-    display: block;
-    height: 9px;
-    margin: 7px 0 14px -30px;
-    min-width: 2px;
+.text_percent {
+    display: inline-block;
+    width: 45px;
 }
 
+.bar_reviews {
+    background-color: #EBBE34;
+    display: inline-block;
+    height: 9px;
+    min-width: 2px;
+    max-width: 75%;
+}
+
+@media (max-width: 1000px){
+    .bar_reviews {
+        max-width: 40%;
+    }
+}
 .myreview_title {
     color: #2B2B2B;
     font-family: 'Noto Sans';
