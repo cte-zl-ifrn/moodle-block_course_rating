@@ -22,6 +22,7 @@
 
 .star-img-small {
     margin-right: .5em;
+    margin-top: 5px !important;
     height: 12px !important;
     width: 12px !important;
 }
@@ -72,14 +73,10 @@ h1.review_title {
     display: inline-block;
     height: 9px;
     min-width: 2px;
-    max-width: 75%;
+    max-width: 100%;
 }
 
-@media (max-width: 1000px){
-    .bar_reviews {
-        max-width: 40%;
-    }
-}
+
 .myreview_title {
     color: #2B2B2B;
     font-family: 'Noto Sans';

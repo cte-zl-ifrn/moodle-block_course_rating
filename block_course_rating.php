@@ -1,4 +1,6 @@
 <?php
+require_once("{$CFG->libdir}/completionlib.php");
+require_once("{$CFG->libdir}/accesslib.php");
 
 class block_course_rating extends block_base
 {
@@ -42,6 +44,34 @@ class block_course_rating extends block_base
         }
     }
 
+    private function get_is_complete_course()
+    {
+        global $DB;
+        $course_object = $DB->get_record('course', array('id' => $this->get_course_id()));
+
+        $cinfo = new completion_info($course_object);
+        $iscomplete = $cinfo->is_course_complete($this->get_user_id());
+        return $iscomplete;
+    }
+
+    private function is_after_finished()
+    {
+        $config = $this->get_config();
+
+        if (array_key_exists('exibition', $config)) {
+            if (
+                $config['exibition'] == 'finished' &&
+                !$this->get_is_complete_course()
+            )
+                return true;
+        } else {
+            if (!$this->get_is_complete_course())
+                return true;
+        }
+
+        return false;
+    }
+
     public function get_content()
     {
         global $OUTPUT, $DB;
@@ -49,70 +79,20 @@ class block_course_rating extends block_base
         if ($this->content !== null) {
             return $this->content;
         }
+        $fmt = new IntlDateFormatter(
+            'pt_BR',
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::FULL,
+            'America/Sao_Paulo',
+            IntlDateFormatter::GREGORIAN
+        );
+        $fmt->setPattern('MMMM dd, yyyy');
+
         $this->content = new stdClass;
 
-        $my_rating = $DB->get_record('course_rating', ['userid' => $this->get_user_id(), 'courseid' => $this->get_course_id()]);
-
-        $record = $DB->get_record("user", ["id" => $this->get_user_id()]);
-        $record->pic =  $OUTPUT->user_picture($record, ['size' => 100, 'link' => true]);
-
-        //echo '<pre>';
-        //die(var_dump($my_rating));
-
-        /************************************************************ */
-        // My Rating
-        if ($my_rating) {
-            $my_review = html_writer::start_div('row pl-3');
-            $my_review .= html_writer::start_div('col-md-2');
-            $my_review .= $record->pic;
-            $my_review .= html_writer::end_div();
-
-            $my_review .= html_writer::start_div('col-md-9');
-            $my_review .= html_writer::tag('strong', $record->firstname . ' ' . $record->lastname, ['class' => 'myreview_title']);
-            $my_review .= html_writer::tag('span',  date('F d, Y', strtotime($my_rating->createat)), ['class' => 'float-right myreview_date']);
-            $my_review .= '<br>';
-
-            for ($i = 1; $i <= 5; $i++) {
-                if ($i <= $my_rating->rating) {
-                    $my_review .=  $OUTPUT->pix_icon('star', $i, 'block_course_rating', ['class' => 'star-img-small']);
-                } else {
-                    $my_review .= $OUTPUT->pix_icon('star-o', $i, 'block_course_rating', ['class' => 'star-img-small']);
-                }
-            }
-
-            $my_review .= '<br>';
-            $my_review .= html_writer::tag('p', $my_rating->message, ['class' => 'myreview_text']);
-            $my_review .= html_writer::end_div();
-
-            $my_review .= html_writer::end_div();
-        }
-
-        /************************************************************ */
-
-        $ratings = $DB->get_records_sql(
-            'SELECT rating, count(id) FROM {course_rating} WHERE courseid = :course
-            GROUP BY rating, courseid ORDER BY rating DESC',
-            ['course' => $this->get_course_id()]
-        );
-
-        $rating_stars_percents = [
-            5 => 0,
-            4 => 0,
-            3 => 0,
-            2 => 0,
-            1 => 0,
-        ];
-        $total_ratings = 0;
-        $sum_rating = 0;
-        foreach ($ratings as $rating) {
-            $rating_stars_percents[$rating->rating] = (int)$rating->count;
-            $total_ratings += $rating->count;
-            $sum_rating += $rating->rating * $rating->count;
-        }
-
-        /******************************************************************************************* */
-        //Send Form 
-        if (isset($_POST['rating']) && $_POST['rating'] > 0) {
+        /********************************************************* */
+        // Receive post
+        if (isset($_POST['rating']) && $_POST['rating'] > 0 && $_POST['rating'] < 6) {
 
             $recordtoinsert = new stdClass();
             $recordtoinsert->rating = $_POST['rating'];
@@ -128,153 +108,116 @@ class block_course_rating extends block_base
                 \core\notification::error(get_string('comment_error', 'block_course_rating'));
             }
         }
+        /********************************************************* */
+        //recover if exist user rating
+        $my_rating = $DB->get_record('course_rating', ['userid' => $this->get_user_id(), 'courseid' => $this->get_course_id()]);
 
-        $content = '';
+        //user logged
+        $user = $DB->get_record("user", ["id" => $this->get_user_id()]);
 
-        /**************************************************** */
-        //All reviews ratings
-        $title_review = '';
-        $title_review .= html_writer::start_div('row pl-3');
-        $title_review .= html_writer::start_div('col-md-2 text-md-right');
-        $title_review .= html_writer::tag('h1', number_format($sum_rating / $total_ratings, 1, '.', ''), ['class' => 'review_title']);
-        $title_review .= html_writer::end_div();
+        //user review stars
+        $review_stars = '';
+        if ($my_rating) {
+            for ($i = 1; $i <= 5; $i++) {
+                if ($i <= $my_rating->rating) {
+                    $review_stars .=  $OUTPUT->pix_icon('star', $i, 'block_course_rating', ['class' => 'star-img-small']);
+                } else {
+                    $review_stars .= $OUTPUT->pix_icon('star-o', $i, 'block_course_rating', ['class' => 'star-img-small']);
+                }
+            }
+        }
 
-        $title_review .= html_writer::start_div('col-md-9');
+        /********************************************************* */
+        // Get all ratings
+        $ratings = $DB->get_records_sql(
+            'SELECT rating, count(id) FROM {course_rating} WHERE courseid = :course
+            GROUP BY rating, courseid ORDER BY rating DESC',
+            ['course' => $this->get_course_id()]
+        );
+
+        $rating_stars_percents = [
+            5 => 0,
+            4 => 0,
+            3 => 0,
+            2 => 0,
+            1 => 0,
+        ];
+        $total_ratings = 0;
+        $sum_rating = 0;
+
+        foreach ($ratings as $rating) {
+            $rating_stars_percents[$rating->rating] = (int)$rating->count;
+            $total_ratings += $rating->count;
+            $sum_rating += $rating->rating * $rating->count;
+        }
+
         $sum_rating = round($sum_rating / $total_ratings);
+        $rating_stars = '';
         for ($i = 1; $i <= 5; $i++) {
             if ($i <= $sum_rating) {
-                $title_review .= $OUTPUT->pix_icon('star', $i, 'block_course_rating', ['class' => 'star-img']);
+                $rating_stars .= $OUTPUT->pix_icon('star', $i, 'block_course_rating', ['class' => 'star-img']);
             } else {
-                $title_review .= $OUTPUT->pix_icon('star-o', $i, 'block_course_rating', ['class' => 'star-img']);
+                $rating_stars .= $OUTPUT->pix_icon('star-o', $i, 'block_course_rating', ['class' => 'star-img']);
             }
         }
+        /********************************************************* */
+        //Rating percents
 
-        $title_review .= html_writer::tag('p', 'baseado em ' . $total_ratings . ($total_ratings > 1 ? ' avaliações.' : ' avaliação.'), ['class' => 'pt-1 text_review']);
-        $title_review .= html_writer::end_div();
-        $title_review .= html_writer::end_div();
-
-        $content .= $title_review;
-
-        /**************************************************************************** */
-        $sub_review = '';
-        $sub_review .= html_writer::start_div('row pl-3 mb-3');
-
-        $sub_review .= html_writer::start_div('col-md-9 pl-md-5 pl-sm-3');
-
+        $stars_percents = '';
+        $stars_bars = '';
         for ($x = 5; $x >= 1; $x--) {
+            $stars_percents .= html_writer::start_span('d-flex', []);
             for ($y = 0; $y < $x; $y++) {
-                $sub_review .=  $OUTPUT->pix_icon('star', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
+                $stars_percents .=  $OUTPUT->pix_icon('star', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
             }
             for ($y = $x; $y < 5; $y++) {
-                $sub_review .=  $OUTPUT->pix_icon('star-o', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
+                $stars_percents .=  $OUTPUT->pix_icon('star-o', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
             }
-            $sub_review .= html_writer::span((($rating_stars_percents[$x] / $total_ratings) * 100) . ' %', 'text_review text_percent');
-            $sub_review .= html_writer::div('', 'bar_reviews', ['style' => 'width: calc(' . (($rating_stars_percents[$x] / $total_ratings) * 100) . ' * 1% )']);
-            $sub_review .=  '<br />';
+            $_calc_rating = round(($rating_stars_percents[$x] / $total_ratings) * 100);
+            $stars_percents .= html_writer::span($_calc_rating . ' %', 'text_review text_percent');
+            $stars_percents .= html_writer::end_span();
+
+            $stars_bars .= html_writer::div('', 'bar_reviews', ['style' => 'width: calc(' . (($rating_stars_percents[$x] / $total_ratings) * 100) . ' * 1% )']);
+            $stars_bars .=  '<br />';
         }
-        $sub_review .= html_writer::end_div();
-        $sub_review .= html_writer::end_div();
-
-        $content .= $sub_review;
-        /**************************************************** */
-        //Message if review is not available
-        $config = $this->get_config();
-        if (array_key_exists('exibition', $config)) {
-            if ($config['exibition'] == 'finished') {
-                //TODO Check if course is finished
-                $content .= html_writer::div(
-                    html_writer::label(get_string('finish_before', 'block_course_rating'), ''),
-                    'col-md-12 text_review text-center'
-                );
-
-                $this->content->text = $content;
-                return $this->content;
-            }
-        } else { // if not has config (default: after finish)
-            $content .= html_writer::div(
-                html_writer::label(get_string('finish_before', 'block_course_rating'), ''),
-                'col-md-12 text_review text-center'
-            );
-
-            $this->content->text = $content;
-            return $this->content;
-        }
-        /**************************************************** */
-        if ($my_rating) {
-            $content .= $my_review;
-
-            $this->content->text = $content;
-            return $this->content;
-        }
-
-        /**************************************************** */
-        // Begin form
-        $content .= html_writer::start_tag('form', ['method' => 'post']);
-
-        /**************************************************** */
-        //  Stars to classification
-
-        $stars = html_writer::start_div('row pl-3');
+        /********************************************************* */
+        // Stars 
+        $stars = '';
         for ($s = 1; $s <= 5; $s++) {
             $stars .= html_writer::start_span('block-rating-star', ['data-block_rating' => $s]);
             $stars .= $OUTPUT->pix_icon('star-o', $s, 'block_course_rating', ['class' => 'star-img']);
             $stars .= $OUTPUT->pix_icon('star', $s, 'block_course_rating', ['class' => 'star-img d-none']);
             $stars .= html_writer::end_span();
         }
-        $stars .= html_writer::end_div();
 
-        /**************************************************** */
-        // Text area to comment
-        $box = html_writer::tag('textarea', '', ['rows' => '5', 'class' => 'form-control comment-ta', 'name' => 'review_message']);
+        $template_context = (object)[
+            'rating_total' => number_format($sum_rating, 1, '.', ''),
+            'rating_stars' => $rating_stars,
+            'rating_text_votes' => 'baseado em ' . $total_ratings . ($total_ratings > 1 ? ' avaliações.' : ' avaliação.'),
 
-        /**************************************************** */
-        // Stars Label
-        $content .= html_writer::start_div('row');
-        $content .= html_writer::div(
-            html_writer::label(get_string('review', 'block_course_rating'), 'review'),
-            'col-md-2 text-right col-form-label'
-        );
+            'stars_percents' => $stars_percents,
+            'stars_bars' => $stars_bars,
+            'review_message_label' => get_string('comment', 'block_course_rating'),
+            'stars_label' => get_string('review', 'block_course_rating'),
+            'stars_vote' => $stars,
+            'submit_text' => get_string('sendbutton', 'block_course_rating'),
 
-        // Stars add to content
-        $content .= html_writer::div($stars, 'col-md-9 col-form-label');
-        $content .= html_writer::end_div();
+            'user_img' => $OUTPUT->user_picture($user, ['size' => 100, 'link' => true]),
+            'user_name' => $user->firstname . ' ' . $user->lastname,
+            'review_stars' => $review_stars,
+            'review_date' => ($my_rating) ? ucfirst($fmt->format(strtotime($my_rating->createat))) : '',
+            'review_text' => ($my_rating) ? $my_rating->message : '',
+            'message_finish_course_before' => get_string('finish_before', 'block_course_rating'),
 
-        /**************************************************** */
-        $content .= html_writer::start_div('row');
-        $content .= html_writer::div(
-            html_writer::label(get_string('comment', 'block_course_rating'), 'review'),
-            'col-md-2 text-right col-form-label'
-        );
+            'is_after_finish' => $this->is_after_finished(),
+            'rating' => $my_rating,
+            'complete_course' => $this->get_is_complete_course()
 
-        // Text area add to content
-        $content .= html_writer::div($box, 'col-md-9 col-form-label');
-        $content .= html_writer::end_div();
-
-        //hidden fields
-        $content .= html_writer::tag('input', '', [
-            'type' => 'hidden',
-            'id' => 'rating',
-            'name' => 'rating',
-            'value' => 0
-        ]);
-
-        /**************************************************** */
-        //Confirm button
-        $button_confirm = html_writer::tag(
-            'button',
-            get_string('sendbutton', 'block_course_rating'),
-            ['class' => 'btn-comment mt-4 mr-3', 'type' => 'submit']
-        );
-        $content .= html_writer::div($button_confirm, 'row justify-content-end pr-6');
-        /**************************************************** */
-        // End form
-        $content .= html_writer::end_tag('form');
-        /**************************************************** */
-
-        $this->content->text .= $content;
-
+        ];
+        $this->content->text = $OUTPUT->render_from_template('block_course_rating/rating', $template_context);
         return $this->content;
     }
+
 
     // Create multiple instances on a page.
     public function instance_allow_multiple()

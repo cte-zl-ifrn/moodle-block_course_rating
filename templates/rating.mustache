@@ -1,0 +1,109 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+{{!
+    @template block_course_rating/rating
+   
+}}
+
+<!-- Users Total Rating -->
+<div class="row pl-3">
+    <div class="col-md-12 pl-5">
+        <div class="d-flex ">
+            <h1 class="review_title">
+                {{rating_total}}
+            </h1>
+            <div class="pt-1 pl-3">
+              {{{rating_stars}}}
+               <br/>
+               <p class="pt-1 text_review d-block">
+                {{rating_text_votes}}
+               </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rating Percents -->
+<div class="row pl-3 mb-3">
+    <div class="col-6 col-sm-5 col-lg-3 pl-md-5 pl-sm-3">
+        {{{stars_percents}}}
+    </div>
+     <div class="col-6 col-sm-7 col-lg-8 ml-sm-n5 ml-n6">
+      {{{stars_bars}}}
+    </div>
+</div>
+
+{{#is_after_finish}}
+<!-- Message if has config -->
+<div class="row">
+    <div class="col-md-12 text_review text-center">
+        {{message_finish_course_before}}
+    </div>
+</div>
+{{/is_after_finish}}
+{{^is_after_finish}}
+
+{{#rating}}
+<!-- User Rating -->
+<div class="row pl-3 mb-4 mt-4">
+    <div class="col-md-2">
+        {{{user_img}}}
+    </div>
+    <div class="col-md-9">
+        <strong class="myreview_title">
+            {{user_name}}
+        </strong>
+        <span class="float-right myreview_date">
+            {{review_date}}
+        </span>
+        <br />
+        {{{review_stars}}}
+        <br />
+        <p class="my_review_text">
+            {{review_text}}
+        </p>
+    </div>
+</div>
+{{/rating}}
+{{^rating}}
+<!-- Rating Form -->
+<form method="POST">
+    <input type="hidden" name="rating" id="rating" value="0">
+    <div class="row pl-3">
+        <div class="col-md-2 text-right col-form-label">
+            <label for="review_message">{{stars_label}}</label>
+        </div>
+        <div class="col-md-9 col-form-label">
+            {{{stars_vote}}}
+        </div>
+    </div>
+    <div class="row pl-2">
+        <div class="col-md-2 text-right col-form-label">
+            <label for="review_message">{{review_message_label}}</label>
+        </div>
+        <div class="col-md-9 col-form-label">
+            <textarea id="review_message" name="review_message" class="form-control comment-ta" cols="" rows="5" required></textarea>
+        </div>
+    </div>
+    <div class="row justify-content-end pr-6 mb-3">
+        <button type="submit" class="btn-comment mt-4 mr-3">{{submit_text}}</button>
+    </div>
+</form>
+{{/rating}}
+
+{{/is_after_finish}}

@@ -27,7 +27,7 @@ $string['in_progress'] = 'In progress';
 $string['finished'] = 'After Course Finished';
 $string['exibition'] = 'Exibition';
 
-$string['finish_before'] = 'Finish the course before sendo a review';
+$string['finish_before'] = 'Finish the course before send a review';
 
 $string['comment_save'] = 'Rating has been sent!';
 $string['comment_error'] = 'An error occurred while saving comment';
