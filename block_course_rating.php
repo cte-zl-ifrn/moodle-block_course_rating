@@ -151,7 +151,7 @@ class block_course_rating extends block_base
             $sum_rating += $rating->rating * $rating->count;
         }
 
-        $sum_rating = round($sum_rating / $total_ratings);
+        $sum_rating = $total_ratings ? round($sum_rating / $total_ratings) : 0;
         $rating_stars = '';
         for ($i = 1; $i <= 5; $i++) {
             if ($i <= $sum_rating) {
@@ -166,19 +166,18 @@ class block_course_rating extends block_base
         $stars_percents = '';
         $stars_bars = '';
         for ($x = 5; $x >= 1; $x--) {
-            $stars_percents .= html_writer::start_span('d-flex', []);
+            $stars_percents .= html_writer::start_span('d-flex justify-content-center justify-content-sm-start', []);
             for ($y = 0; $y < $x; $y++) {
                 $stars_percents .=  $OUTPUT->pix_icon('star', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
             }
             for ($y = $x; $y < 5; $y++) {
                 $stars_percents .=  $OUTPUT->pix_icon('star-o', $y + 1, 'block_course_rating', ['class' => 'star-img-small']);
             }
-            $_calc_rating = round(($rating_stars_percents[$x] / $total_ratings) * 100);
+            $_calc_rating = $total_ratings ?  round(($rating_stars_percents[$x] / $total_ratings) * 100) : 0;
             $stars_percents .= html_writer::span($_calc_rating . ' %', 'text_review text_percent');
             $stars_percents .= html_writer::end_span();
-
-            $stars_bars .= html_writer::div('', 'bar_reviews', ['style' => 'width: calc(' . (($rating_stars_percents[$x] / $total_ratings) * 100) . ' * 1% )']);
-            $stars_bars .=  '<br />';
+            $percent_bar = $total_ratings ? ($rating_stars_percents[$x] / $total_ratings) : 0;
+            $stars_bars .= html_writer::div('', 'bar_reviews', ['style' => 'width: calc(' . ($percent_bar * 100) . ' * 1% )']);
         }
         /********************************************************* */
         // Stars 
@@ -201,6 +200,7 @@ class block_course_rating extends block_base
             'stars_label' => get_string('review', 'block_course_rating'),
             'stars_vote' => $stars,
             'submit_text' => get_string('sendbutton', 'block_course_rating'),
+            'cancel_text' => get_string('cancelbutton', 'block_course_rating'),
 
             'user_img' => $OUTPUT->user_picture($user, ['size' => 100, 'link' => true]),
             'user_name' => $user->firstname . ' ' . $user->lastname,
@@ -211,6 +211,7 @@ class block_course_rating extends block_base
 
             'is_after_finish' => $this->is_after_finished(),
             'rating' => $my_rating,
+            'rating_note' => $my_rating->rating,
             'complete_course' => $this->get_is_complete_course()
 
         ];

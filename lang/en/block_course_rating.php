@@ -16,6 +16,8 @@ $string['comment'] = 'Comment';
 $string['block_course_rating'] = 'Rating Course in Block';
 $string['content'] = 'Content';
 $string['sendbutton'] = 'Send comment';
+$string['cancelbutton'] = 'Cancel';
+
 
 $string['blocksettings'] = 'Block Settings';
 $string['blockstring'] = 'Block String';

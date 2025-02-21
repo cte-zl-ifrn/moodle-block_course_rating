@@ -17,6 +17,8 @@ $string['review'] = 'Avaliação';
 $string['comment'] = 'Comentário';
 $string['content'] = 'Conteúdo';
 $string['sendbutton'] = 'Publicar comentário';
+$string['cancelbutton'] = 'Cancelar';
+
 
 $string['blocksettings'] = 'Configurações de bloco';
 $string['blockstring'] = 'Texto do bloco';
