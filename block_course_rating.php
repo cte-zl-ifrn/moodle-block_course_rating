@@ -90,9 +90,12 @@ class block_course_rating extends block_base
 
         $this->content = new stdClass;
 
+        //recover if exist user rating
+        $my_rating = $DB->get_record('course_rating', ['userid' => $this->get_user_id(), 'courseid' => $this->get_course_id()]);
+
         /********************************************************* */
         // Receive post
-        if (isset($_POST['rating']) && $_POST['rating'] > 0 && $_POST['rating'] < 6) {
+        if (isset($_POST['rating']) && is_numeric($_POST['rating']) && $_POST['rating'] > 0 && $_POST['rating'] < 6) {
 
             $recordtoinsert = new stdClass();
             $recordtoinsert->rating = $_POST['rating'];
@@ -100,7 +103,19 @@ class block_course_rating extends block_base
             $recordtoinsert->courseid = $this->get_course_id();
             $recordtoinsert->userid = $this->get_user_id();
             if (isset($_POST['review_message']) && $this->get_course_id() != 0 && $this->get_user_id() != 0) {
-                $DB->insert_record('course_rating', $recordtoinsert);
+                if ($my_rating) {
+                    $historytoinsert = new stdClass();
+                    $historytoinsert->rating = $my_rating->rating;
+                    $historytoinsert->message = $my_rating->message;
+                    $historytoinsert->originid = $my_rating->id;
+                    $DB->insert_record('course_rating_history', $historytoinsert);
+                    //updating actual rating
+                    $recordtoinsert->updatedat = date("Y-m-d H:i:s");
+                    $recordtoinsert->id = $my_rating->id;
+                    $DB->update_record('course_rating', $recordtoinsert);
+                } else {
+                    $DB->insert_record('course_rating', $recordtoinsert);
+                }
                 \core\notification::success(get_string('comment_save', 'block_course_rating'));
                 $url = new moodle_url('/course/view.php', array('id' => $this->get_course_id()));
                 redirect($url);
@@ -109,8 +124,6 @@ class block_course_rating extends block_base
             }
         }
         /********************************************************* */
-        //recover if exist user rating
-        $my_rating = $DB->get_record('course_rating', ['userid' => $this->get_user_id(), 'courseid' => $this->get_course_id()]);
 
         //user logged
         $user = $DB->get_record("user", ["id" => $this->get_user_id()]);
@@ -205,13 +218,14 @@ class block_course_rating extends block_base
             'user_img' => $OUTPUT->user_picture($user, ['size' => 100, 'link' => true]),
             'user_name' => $user->firstname . ' ' . $user->lastname,
             'review_stars' => $review_stars,
-            'review_date' => ($my_rating) ? ucfirst($fmt->format(strtotime($my_rating->createat))) : '',
+            'review_date' => ($my_rating) ? ucfirst($fmt->format(strtotime($my_rating->createdat))) : '',
             'review_text' => ($my_rating) ? $my_rating->message : '',
             'message_finish_course_before' => get_string('finish_before', 'block_course_rating'),
 
             'is_after_finish' => $this->is_after_finished(),
             'rating' => $my_rating,
             'rating_note' => $my_rating->rating,
+            'rating_edited' => $my_rating->createdat != $my_rating->updatedat,
             'complete_course' => $this->get_is_complete_course()
 
         ];

@@ -57,7 +57,6 @@
     </div>
 </div>
 {{/is_after_finish}}
-{{^is_after_finish}}
 
 {{#rating}}
 <!-- User Rating -->
@@ -75,7 +74,9 @@
         <span class="myreview_date">
             {{review_date}}
             <br>
+            {{#rating_edited}}
             <sub>Editado</sub>
+            {{/rating_edited}}
         </span>
         <br />
         <p class="my_review_text">
@@ -88,14 +89,19 @@
     </div>
 </div>
 {{/rating}}
+
+{{#is_after_finish}}
+{{/is_after_finish}}
+{{^is_after_finish}}
 <!--Rating Form -->
+{{#rating}}
 <form method="POST" id="rating_form" style="display:none">
-    {{#rating}}
-        <input type="hidden" name="rating" id="rating" value="{{rating_note}}">
-    {{/rating}}
-    {{^rating}}
-        <input type="hidden" name="rating" id="rating" value="0">
-    {{/rating}}
+    <input type="hidden" name="rating" id="rating" value="{{rating_note}}">
+{{/rating}}
+{{^rating}}
+<form method="POST" id="rating_form">
+    <input type="hidden" name="rating" id="rating" value="0">
+{{/rating}}
     <div class="row pl-3">
         <div class="col-md-2 text-center text-md-right col-form-label">
             <label for="review_message">{{stars_label}}</label>
@@ -114,10 +120,11 @@
     </div>
     <div class="row mb-3">
         <div class="col-md-11 d-flex justify-content-md-end justify-content-center">
+            {{#rating}}
             <button type="button" class="btn-secondary mt-4 btn_cancel" id="cancel_rating_button">{{cancel_text}}</button>
+             {{/rating}}
             <button type="submit" class="btn-comment mt-4">{{submit_text}}</button>
         </div>
     </div>
 </form>
-
 {{/is_after_finish}}
