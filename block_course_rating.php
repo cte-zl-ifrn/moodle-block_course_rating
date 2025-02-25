@@ -1,6 +1,4 @@
 <?php
-require_once("{$CFG->libdir}/completionlib.php");
-require_once("{$CFG->libdir}/accesslib.php");
 
 class block_course_rating extends block_base
 {
@@ -79,6 +77,8 @@ class block_course_rating extends block_base
         if ($this->content !== null) {
             return $this->content;
         }
+        $this->content = new stdClass;
+
         $fmt = new IntlDateFormatter(
             'pt_BR',
             IntlDateFormatter::FULL,
@@ -87,8 +87,6 @@ class block_course_rating extends block_base
             IntlDateFormatter::GREGORIAN
         );
         $fmt->setPattern('MMMM dd, yyyy');
-
-        $this->content = new stdClass;
 
         //recover if exist user rating
         $my_rating = $DB->get_record('course_rating', ['userid' => $this->get_user_id(), 'courseid' => $this->get_course_id()]);
@@ -99,10 +97,11 @@ class block_course_rating extends block_base
 
             $recordtoinsert = new stdClass();
             $recordtoinsert->rating = $_POST['rating'];
-            $recordtoinsert->message = $_POST['review_message'];
+            $recordtoinsert->message = $_POST['user_rating_message'];
             $recordtoinsert->courseid = $this->get_course_id();
             $recordtoinsert->userid = $this->get_user_id();
-            if (isset($_POST['review_message']) && $this->get_course_id() != 0 && $this->get_user_id() != 0) {
+
+            if (isset($_POST['user_rating_message']) && $this->get_course_id() != 0 && $this->get_user_id() != 0) {
                 if ($my_rating) {
                     $historytoinsert = new stdClass();
                     $historytoinsert->rating = $my_rating->rating;
@@ -114,12 +113,15 @@ class block_course_rating extends block_base
                     $recordtoinsert->id = $my_rating->id;
                     $DB->update_record('course_rating', $recordtoinsert);
                 } else {
+                    //insert new rating
                     $DB->insert_record('course_rating', $recordtoinsert);
                 }
+                //notification on save
                 \core\notification::success(get_string('comment_save', 'block_course_rating'));
                 $url = new moodle_url('/course/view.php', array('id' => $this->get_course_id()));
                 redirect($url);
             } else {
+                //notification if is not possible save the rating
                 \core\notification::error(get_string('comment_error', 'block_course_rating'));
             }
         }
@@ -174,7 +176,7 @@ class block_course_rating extends block_base
             }
         }
         /********************************************************* */
-        //Rating percents
+        //Rating percents bars
 
         $stars_percents = '';
         $stars_bars = '';
@@ -190,45 +192,44 @@ class block_course_rating extends block_base
             $stars_percents .= html_writer::span($_calc_rating . ' %', 'text_review text_percent');
             $stars_percents .= html_writer::end_span();
             $percent_bar = $total_ratings ? ($rating_stars_percents[$x] / $total_ratings) : 0;
-            $stars_bars .= html_writer::div('', 'bar_reviews', ['style' => 'width: calc(' . ($percent_bar * 100) . ' * 1% )']);
+            $stars_bars .= html_writer::div('', 'bar_ratings', ['style' => 'width: calc(' . ($percent_bar * 100) . ' * 1% )']);
         }
         /********************************************************* */
-        // Stars 
+        // Stars form
         $stars = '';
         for ($s = 1; $s <= 5; $s++) {
-            $stars .= html_writer::start_span('block-rating-star', ['data-block_rating' => $s]);
+            $stars .= html_writer::start_span('rating-star', ['data-block_rating' => $s]);
             $stars .= $OUTPUT->pix_icon('star-o', $s, 'block_course_rating', ['class' => 'star-img']);
             $stars .= $OUTPUT->pix_icon('star', $s, 'block_course_rating', ['class' => 'star-img d-none']);
             $stars .= html_writer::end_span();
         }
 
         $template_context = (object)[
+            'is_after_finish' => $this->is_after_finished(),
+            'message_finish_course_before' => get_string('finish_before', 'block_course_rating'),
+
             'rating_total' => number_format($sum_rating, 1, '.', ''),
             'rating_stars' => $rating_stars,
             'rating_text_votes' => 'baseado em ' . $total_ratings . ($total_ratings > 1 ? ' avaliações.' : ' avaliação.'),
-
             'stars_percents' => $stars_percents,
             'stars_bars' => $stars_bars,
-            'review_message_label' => get_string('comment', 'block_course_rating'),
-            'stars_label' => get_string('review', 'block_course_rating'),
+
             'stars_vote' => $stars,
             'submit_text' => get_string('sendbutton', 'block_course_rating'),
             'cancel_text' => get_string('cancelbutton', 'block_course_rating'),
 
+            'user_rating' => $my_rating,
             'user_img' => $OUTPUT->user_picture($user, ['size' => 100, 'link' => true]),
             'user_name' => $user->firstname . ' ' . $user->lastname,
-            'review_stars' => $review_stars,
-            'review_date' => ($my_rating) ? ucfirst($fmt->format(strtotime($my_rating->createdat))) : '',
-            'review_text' => ($my_rating) ? $my_rating->message : '',
-            'message_finish_course_before' => get_string('finish_before', 'block_course_rating'),
-
-            'is_after_finish' => $this->is_after_finished(),
-            'rating' => $my_rating,
-            'rating_note' => $my_rating->rating,
-            'rating_edited' => $my_rating->createdat != $my_rating->updatedat,
-            'complete_course' => $this->get_is_complete_course()
-
+            'user_rating_message_label' => get_string('comment', 'block_course_rating'),
+            'user_rating_stars_label' => get_string('review', 'block_course_rating'),
+            'user_rating_stars' => $review_stars,
+            'user_rating_date' => ($my_rating) ? ucfirst($fmt->format(strtotime($my_rating->createdat))) : '',
+            'user_rating_text' => ($my_rating) ? $my_rating->message : '',
+            'user_rating_note' => $my_rating->rating,
+            'user_rating_edited' => $my_rating->createdat != $my_rating->updatedat
         ];
+
         $this->content->text = $OUTPUT->render_from_template('block_course_rating/rating', $template_context);
         return $this->content;
     }
@@ -253,7 +254,7 @@ class block_course_rating extends block_base
             'site-index' => false,
             'course-view' => true,
             'mod' => false,
-            'my' => true,
+            'my' => false,
         ];
     }
 }

@@ -10,7 +10,7 @@
     width: 100%;
 }
 
-.block-rating-start {
+.rating-star {
     cursor: pointer;
 }
 
@@ -44,7 +44,7 @@
     width: 191px;
 }
 
-h1.review_title {
+h1.rating_title {
     color: #2B2B2B;
     font-family: 'Noto Sans';
     font-style: normal;
@@ -54,7 +54,7 @@ h1.review_title {
 }
 
 
-.text_review{
+.text_rating{
     color: #2B2B2B;
     font-family: 'Noto Sans';
     font-style: normal;
@@ -68,7 +68,7 @@ h1.review_title {
     width: 50px;
 }
 
-.bar_reviews {
+.bar_ratings {
     background-color: #EBBE34;
     display: block;
     height: 10px;
@@ -77,8 +77,7 @@ h1.review_title {
     margin: 7px 0 12px;
 }
 
-
-.myreview_title {
+.user_rating_title {
     color: #2B2B2B;
     font-family: 'Noto Sans';
     font-style: normal;
@@ -87,7 +86,7 @@ h1.review_title {
     line-height: 22px;
 }
 
-.myreview_date {
+.user_rating_date {
     color: #858585;
     font-family: 'Noto Sans';
     font-style: normal;
@@ -100,7 +99,7 @@ h1.review_title {
     text-align: right;
 }
 
-.myreview_text {
+.user_rating_text {
     color: #2B2B2B;
     font-family: 'Noto Sans';
     font-style: normal;
@@ -130,7 +129,7 @@ h1.review_title {
     margin-right: 15px;
 }
 @media screen and (max-width: 980px) {
-    .myreview_date {
+    .user_rating_date {
         width: 100%;
         display: block;
         position: relative;

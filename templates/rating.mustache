@@ -23,14 +23,14 @@
 <!-- Users Total Rating -->
 <div class="row pl-3">
     <div class="col-12 col-sm-3 col-lg-2 text-center text-sm-right">
-        <h1 class="review_title">
+        <h1 class="rating_title">
             {{rating_total}}
         </h1>
     </div>
     <div class="col-12 col-sm-9 col-lg-10 mr-n3 text-center text-sm-left">
         {{{rating_stars}}}
         <br/>
-        <p class="pt-1 text_review d-block">
+        <p class="pt-1 text_rating d-block">
             {{rating_text_votes}}
         </p>
     </div>
@@ -49,7 +49,7 @@
 {{#is_after_finish}}
 <!-- Message if has config -->
 <div class="row">
-    <div class="col-md-12 text_review text-center mb-3"> 
+    <div class="col-md-12 text_rating text-center mb-3"> 
         <span class="message_after">
             <i class="fa fa-circle-exclamation"></i>
             {{message_finish_course_before}}
@@ -58,29 +58,29 @@
 </div>
 {{/is_after_finish}}
 
-{{#rating}}
+{{#user_rating}}
 <!-- User Rating -->
 <div class="row pl-3 mb-4 mt-4" id="rating_message">
     <div class="col-12 col-lg-2 text-center text-lg-right">
         {{{user_img}}}
     </div>
     <div class="col-lg-9 ml-n2">
-        <strong class="d-block myreview_title text-center text-lg-left">
+        <strong class="d-block user_rating_title text-center text-lg-left">
             {{user_name}}
         </strong>
         <span class="d-block text-center text-lg-left">
-            {{{review_stars}}}
+            {{{user_rating_stars}}}
         </span>
         <span class="myreview_date">
-            {{review_date}}
+            {{user_rating_date}}
             <br>
-            {{#rating_edited}}
+            {{#user_rating_edited}}
             <sub>Editado</sub>
-            {{/rating_edited}}
+            {{/user_rating_edited}}
         </span>
         <br />
-        <p class="my_review_text">
-            {{review_text}}
+        <p class="my_rating_text">
+            {{user_rating_text}}
         </p>  
         <button type="button" class="btn btn-sm btn_edit" id="edit_rating_button">
             <i class="fa fa-edit"></i>
@@ -88,41 +88,41 @@
         </button>
     </div>
 </div>
-{{/rating}}
+{{/user_rating}}
 
 {{#is_after_finish}}
 {{/is_after_finish}}
 {{^is_after_finish}}
 <!--Rating Form -->
-{{#rating}}
+{{#user_rating}}
 <form method="POST" id="rating_form" style="display:none">
-    <input type="hidden" name="rating" id="rating" value="{{rating_note}}">
-{{/rating}}
-{{^rating}}
+    <input type="hidden" name="rating" id="rating" value="{{user_rating_note}}">
+{{/user_rating}}
+{{^user_rating}}
 <form method="POST" id="rating_form">
     <input type="hidden" name="rating" id="rating" value="0">
-{{/rating}}
+{{/user_rating}}
     <div class="row pl-3">
         <div class="col-md-2 text-center text-md-right col-form-label">
-            <label for="review_message">{{stars_label}}</label>
+            <label for="user_rating_stars">{{user_rating_stars_label}}</label>
         </div>
-        <div class="col-md-9 col-form-label text-center text-md-left">
+        <div class="col-md-9 col-form-label text-center text-md-left" id="user_rating_stars">
             {{{stars_vote}}}
         </div>
     </div>
     <div class="row pl-2">
         <div class="col-md-2 text-center text-md-right col-form-label">
-            <label for="review_message">{{review_message_label}}</label>
+            <label for="user_rating_message">{{user_rating_message_label}}</label>
         </div>
         <div class="col-md-9 col-form-label">
-            <textarea id="review_message" name="review_message" class="form-control comment-ta" cols="" rows="5" required>{{review_text}}</textarea>
+            <textarea id="user_rating_message" name="user_rating_message" class="form-control comment-ta" cols="" rows="5" required>{{user_rating_text}}</textarea>
         </div>
     </div>
     <div class="row mb-3">
         <div class="col-md-11 d-flex justify-content-md-end justify-content-center">
-            {{#rating}}
+            {{#user_rating}}
             <button type="button" class="btn-secondary mt-4 btn_cancel" id="cancel_rating_button">{{cancel_text}}</button>
-             {{/rating}}
+             {{/user_rating}}
             <button type="submit" class="btn-comment mt-4">{{submit_text}}</button>
         </div>
     </div>
