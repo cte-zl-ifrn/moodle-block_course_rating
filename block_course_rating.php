@@ -210,7 +210,7 @@ class block_course_rating extends block_base
 
             'rating_total' => number_format($sum_rating, 1, '.', ''),
             'rating_stars' => $rating_stars,
-            'rating_text_votes' => 'baseado em ' . $total_ratings . ($total_ratings > 1 ? ' avaliações.' : ' avaliação.'),
+            'rating_text_votes' =>  get_string('based_on', 'block_course_rating') . $total_ratings . ' ' . ($total_ratings > 1 ? get_string('ratings', 'block_course_rating') : get_string('rating', 'block_course_rating')),
             'stars_percents' => $stars_percents,
             'stars_bars' => $stars_bars,
 
@@ -222,7 +222,7 @@ class block_course_rating extends block_base
             'user_img' => $OUTPUT->user_picture($user, ['size' => 100, 'link' => true]),
             'user_name' => $user->firstname . ' ' . $user->lastname,
             'user_rating_message_label' => get_string('comment', 'block_course_rating'),
-            'user_rating_stars_label' => get_string('review', 'block_course_rating'),
+            'user_rating_stars_label' => get_string('rating_label', 'block_course_rating'),
             'user_rating_stars' => $review_stars,
             'user_rating_date' => ($my_rating) ? ucfirst($fmt->format(strtotime($my_rating->createdat))) : '',
             'user_rating_text' => ($my_rating) ? $my_rating->message : '',
