@@ -104,7 +104,7 @@ switch ($section) {
             }
 
             $rating_list[] = [
-                'user_name' =>  $rating->id . ' - ' . $record->firstname . ' ' . $record->lastname,
+                'user_name' => $record->firstname . ' ' . $record->lastname,
                 'user_img' => $record->pic,
                 'rating' => $review_stars,
                 'rating_message' => $rating->message,

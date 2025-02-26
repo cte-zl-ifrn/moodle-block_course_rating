@@ -13,6 +13,8 @@ require_once(__DIR__ . '/../../config.php');
 
 global $DB, $USER;
 
+$user_id = $_GET['user_id'] ? (int)$_GET['user_id'] : $USER->id;
+
 $history = $DB->get_records_sql(
     'SELECT crh.id, crh.rating, crh.message, crh.createdat, CONCAT(us.firstname, \' \', us.lastname) as user_name , cs.fullname as course_name
     FROM {course_rating_history} crh
@@ -23,7 +25,7 @@ $history = $DB->get_records_sql(
     order by crh.createdat
     LIMIT 10
     ',
-    ['userid' => $USER->id]
+    ['userid' => $user_id]
 );
 $fmt = new IntlDateFormatter(
     'pt_BR',
