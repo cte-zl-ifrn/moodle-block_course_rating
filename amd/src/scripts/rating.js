@@ -116,10 +116,11 @@ if(document.getElementById('edit_rating_button')) {
         document.getElementById('rating_message').style.display = 'none';
         document.getElementById('rating_form').style.display = 'block';
     });
-    document.getElementById('cancel_rating_button').addEventListener('click', (event) => {
-        document.getElementById('rating_message').style.display = 'flex';
-        document.getElementById('rating_form').style.display = 'none';
-    });
+    if(document.getElementById('cancel_rating_button'))
+        document.getElementById('cancel_rating_button').addEventListener('click', (event) => {
+            document.getElementById('rating_message').style.display = 'flex';
+            document.getElementById('rating_form').style.display = 'none';
+        });
 } 
 
 (function() {
