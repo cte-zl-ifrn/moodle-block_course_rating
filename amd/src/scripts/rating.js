@@ -39,7 +39,7 @@ function setRating(value) {
 // Load users ratings using ajax
 function loadRatings() {
     var offset = document.getElementById('offset_ratings').value;
-    var course = document.getElementById('course_ratings').value;
+    var course = document.getElementById('courseid').value;
 
     const xhttp = new XMLHttpRequest()
     xhttp.onload = function() {
@@ -62,7 +62,7 @@ function loadRatings() {
 
 // Load total rating and stars using ajax
 function loadRatingBars() {
-    var course = document.getElementById('course_ratings').value;
+    var course = document.getElementById('courseid').value;
 
     const xhttp = new XMLHttpRequest()
     xhttp.onload = function () {
@@ -71,6 +71,29 @@ function loadRatingBars() {
     xhttp.open('GET', '../blocks/course_rating/endpoint.php?section=RATINGS&course='+course);
     xhttp.send();
 
+}
+
+function init_load_rating() {
+    var plugin_container = document.getElementById('plugin_block_ratings_container');
+
+    if(plugin_container) {
+        plugin_container.innerHTML = '' +
+        '<input type="hidden" name="offset_ratings" id="offset_ratings" value="0"  autocomplete="off">'+
+        '<div id="container_ratings_bars"></div> '+
+        '<div id="container_ratings"></div>'+
+        '<div class="d-flex justify-content-center">'+
+        '   <button type="button" onclick="loadRatings()" id="btn_load_ratings" class="btn btn-secondary"> Mostrar mais comentários</button>'+
+        '</div>';
+
+        // Loading all comments in course page
+        if(document.getElementById('offset_ratings') && document.getElementById('courseid'))
+            loadRatings();
+
+        // Loading ratings and bars
+        if(document.getElementById('container_ratings_bars'))
+            loadRatingBars();
+
+    }
 }
 
 //Mouse over stars effect
@@ -107,13 +130,10 @@ if(document.getElementById('edit_rating_button')) {
     if(document.getElementById('rating'))
       setCheckedStar(document.getElementById('rating').value);
 
-    // Loading all comments in course page
-    if(document.getElementById('offset_ratings') && document.getElementById('course_ratings'))
-        loadRatings();
-
-    // Loading ratings and bars
-    if(document.getElementById('container_ratings_bars'))
-        loadRatingBars();
+    // Load all content html in single div
+    if(document.getElementById('plugin_block_ratings_container')){
+        init_load_rating();
+    }
 })();
 
 
