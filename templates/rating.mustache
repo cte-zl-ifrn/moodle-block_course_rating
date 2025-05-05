@@ -1,0 +1,130 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+{{!
+    @template block_course_rating/rating
+   
+}}
+
+<!-- Users Total Rating -->
+<div class="row pl-3">
+    <div class="col-12 col-sm-3 col-lg-2 text-center text-sm-right">
+        <h1 class="rating_title">
+            {{rating_total}}
+        </h1>
+    </div>
+    <div class="col-12 col-sm-9 col-lg-10 mr-n3 text-center text-sm-left">
+        {{{rating_stars}}}
+        <br/>
+        <p class="pt-1 text_rating d-block">
+            {{rating_text_votes}}
+        </p>
+    </div>
+</div>
+
+<!-- Rating Percents -->
+<div class="row pl-3 mb-3">
+    <div class="col-12 col-sm-5 col-md-5 col-lg-4 col-xl-3 pl-md-5 pl-sm-3 mr-n3">
+        {{{stars_percents}}}
+    </div>
+     <div class="col-6 col-sm-7 col-md-7 col-lg-8 col-xl-9 ml-sm-n5 ml-n5 d-none d-sm-block">
+      {{{stars_bars}}}
+    </div>
+</div>
+
+{{#is_after_finish}}
+<!-- Message if has config -->
+<div class="row">
+    <div class="col-md-12 text_rating text-center mb-3"> 
+        <span class="message_after">
+            <i class="fa fa-circle-exclamation"></i>
+            {{message_finish_course_before}}
+        </span>
+    </div>
+</div>
+{{/is_after_finish}}
+
+{{#user_rating}}
+<!-- User Rating -->
+<div class="row pl-3 mb-4 mt-4" id="rating_message">
+    <div class="col-12 col-lg-2 text-center text-lg-right">
+        {{{user_img}}}
+    </div>
+    <div class="col-lg-9 ml-n2">
+        <strong class="d-block user_rating_title text-center text-lg-left">
+            {{user_name}}
+        </strong>
+        <span class="d-block text-center text-lg-left">
+            {{{user_rating_stars}}}
+        </span>
+        <span class="user_rating_date">
+            {{user_rating_date}}
+            <br>
+            {{#user_rating_edited}}
+            <sub>Editado</sub>
+            {{/user_rating_edited}}
+        </span>
+        <br />
+        <p class="user_rating_text">
+            {{user_rating_text}}
+        </p>  
+        <button type="button" class="btn btn-sm btn_edit" id="edit_rating_button">
+            <i class="fa fa-edit"></i>
+            Editar
+        </button>
+    </div>
+</div>
+{{/user_rating}}
+
+{{#is_after_finish}}
+{{/is_after_finish}}
+{{^is_after_finish}}
+<!--Rating Form -->
+{{#user_rating}}
+<form method="POST" id="rating_form" style="display:none">
+    <input type="hidden" name="rating" id="rating" value="{{user_rating_note}}">
+{{/user_rating}}
+{{^user_rating}}
+<form method="POST" id="rating_form">
+    <input type="hidden" name="rating" id="rating" value="0">
+{{/user_rating}}
+    <div class="row pl-3">
+        <div class="col-md-2 text-center text-md-right col-form-label">
+            <label for="user_rating_stars">{{user_rating_stars_label}}</label>
+        </div>
+        <div class="col-md-9 col-form-label text-center text-md-left" id="user_rating_stars">
+            {{{stars_vote}}}
+        </div>
+    </div>
+    <div class="row pl-2">
+        <div class="col-md-2 text-center text-md-right col-form-label">
+            <label for="user_rating_message">{{user_rating_message_label}}</label>
+        </div>
+        <div class="col-md-9 col-form-label">
+            <textarea id="user_rating_message" name="user_rating_message" class="form-control comment-ta" cols="" rows="5" required>{{user_rating_text}}</textarea>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-11 d-flex justify-content-md-end justify-content-center">
+            {{#user_rating}}
+            <button type="button" class="btn-secondary mt-4 btn_cancel" id="cancel_rating_button">{{cancel_text}}</button>
+             {{/user_rating}}
+            <button type="submit" class="btn-comment mt-4">{{submit_text}}</button>
+        </div>
+    </div>
+</form>
+{{/is_after_finish}}

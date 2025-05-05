@@ -1,0 +1,26 @@
+{{#ratings}}
+<div class="row pl-3 mb-4 mt-4" id="rating_message">
+    <div class="col-12 col-lg-2 text-center text-lg-right">
+        {{{user_img}}}
+    </div>
+    <div class="col-lg-9 ml-n2">
+        <strong class="d-block user_rating_title text-center text-lg-left">
+            {{user_name}}
+        </strong>
+        <span class="d-block text-center text-lg-left">
+            {{{rating}}}
+        </span>
+        <span class="user_rating_date">
+            {{rating_date}}
+            <br>
+            {{#rating_edited}}
+            <sub>Editado</sub>
+            {{/rating_edited}}
+        </span>
+        <br />
+        <p class="user_rating_text">
+            {{rating_message}}
+        </p>  
+    </div>
+</div>
+{{/ratings}}
