@@ -254,7 +254,7 @@ class block_course_rating extends block_base
             'site-index' => false,
             'course-view' => true,
             'mod' => false,
-            'my' => false,
+            'my' => true,
         ];
     }
 }
