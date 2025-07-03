@@ -29,7 +29,7 @@ requires: "3.11"
 
 ## Plugin maturity level. Possible options are MATURIY_ALPHA, MATURITY_BETA,
 ## MATURITY_RC or MATURIY_STABLE.
-maturity: MATURITY_BETA
+maturity: MATURITY_STABLE
 
 ## Copyright holder(s) of the generated files and classes.
 copyright: 2025, Daniel Morais <danielbergmorais@gmail.com>
