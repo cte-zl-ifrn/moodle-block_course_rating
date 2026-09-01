@@ -1,12 +1,12 @@
 # Dados para envio ao INPI
 
-- Título: **H5P.CustomizableInteractiveBook (plugin H5P)**
-- Linguagens de programação: `JavaScript`
-- Classificação: `IF-01; IF-07;PD-01`
+- Título: **block_course_rating (plugin Moodle do tipo bloco)**
+- Linguagens de programação: `PHP`, `JavaScript`, `CSS`, `Mustache`, `SQL`
+- Classificação: `AP01 - Aplicativos`, `EA01 - Educação / Aprendizagem`, `GI01 - Gerenciador de Informações`, `AT01 - Automação`
 - Data de criação: `17/02/2025`
-- Apresentação: 
-- Descrição: 
-- Aplicação: 
-- Futuros: 
-- Viabilidade Econômica: 
-- Programas Similares: 
+- Apresentação: O block_course_rating é um plugin do tipo bloco para o Moodle que fornece um sistema estruturado de avaliação de cursos por parte dos estudantes. Ele permite registrar notas em escala de 1 a 5 estrelas e comentários qualitativos sobre a experiência pedagógica, consolidando dados estatísticos de satisfação e subsidiando a melhoria contínua das ofertas educacionais.
+- Descrição: O programa estrutura um modelo de persistência relacional composto por duas tabelas principais no banco de dados do Moodle: `{course_rating}`, que armazena a avaliação e comentário vigentes de cada usuário por curso, e `{course_rating_history}`, responsável pelo versionamento de histórico sempre que um estudante edita sua avaliação, assegurando rastreabilidade e auditabilidade. O bloco dispõe de cálculo automatizado de médias ponderadas, distribuição percentual de notas exibida em barras gráficas e suporte a templates Mustache. Conta com mecanismos configuráveis de controle de acesso: pode ser exibido condicionalmente apenas após a conclusão efetiva do curso (utilizando a API de conclusão do core do Moodle, `completion_info`) ou permanecer disponível durante toda a jornada formativa. O frontend é estruturado em AMD com folhas de estilo otimizadas e rotinas de internacionalização com suporte nativo a datas em português brasileiro via `IntlDateFormatter`.
+- Aplicação: O block_course_rating é aplicado no interior das salas virtuais de cursos MOOC, disciplinas de graduação e pós-graduação EaD, oficinas e programas de capacitação institucional no Moodle. Sua função é viabilizar canais diretos de escuta do estudante e coleta de feedback pedagógico, gerando indicadores para coordenadores de curso, designers instrucionais e comissões de avaliação acadêmica.
+- Futuros: Entre os desenvolvimentos futuros previstos para o block_course_rating estão o desenvolvimento de um painel de análise de sentimento e extração de tópicos dos comentários por inteligência artificial (NLP), módulo de moderação de comentários com respostas públicas ou privadas de professores/tutores, relatórios estatísticos consolidados por área e campus para Comissões Próprias de Avaliação (CPA) e integração com o catálogo da página inicial para exibição da nota média nos cards de cursos.
+- Viabilidade Econômica: A tecnologia tem ampla viabilidade de transferência para instituições educacionais e corporativas que demandam instrumentos ágeis e automatizados de autoavaliação institucional. O plugin substitui o uso de plataformas externas pagas de pesquisa de satisfação e formulários manuais, reduzindo o tempo de consolidação de dados e custos operacionais de secretarias acadêmicas e órgãos de regulação e qualidade do ensino.
+- Programas Similares: Programas similares incluem a atividade nativa Feedback/Questionário do Moodle e plugins da comunidade como Course Reviews e Rate Course Block. O block_course_rating destaca-se por seu mecanismo nativo de histórico versionado de edições, integração condicional ao status de conclusão de curso do Moodle, apresentação visual de barras de classificação inspirada nos grandes portais de cursos mundiais e alinhamento visual com o ecossistema SUAP.
